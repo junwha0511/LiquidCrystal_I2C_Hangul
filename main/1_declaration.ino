@@ -1,8 +1,12 @@
-#include<Wire.h> //LCD를 위한 라이브러리
-#include<LiquidCrystal_I2C.h> //LCD를 위한 라이브러리
- 
-LiquidCrystal_I2C lcd(0x3F,16,2); //LCD 클래스 초기화
+int enrollNum = 0;
+int delayTime = 500;
 
+void setDelayTime(int t){
+  delayTime = t;
+}
+byte space[8] = {
+  B00000,B00000,B00000,B00000,B00000,B00000,B00000,B00000
+};
 //초성/종성 자음
 byte r[8] = {//ㄱ
         B11111,B00001,B00001,B00001,B00000,B00000,B00000,B00000
@@ -40,7 +44,7 @@ byte z[8] = {//ㅋ
 byte x[8] = {//ㅌ
         B11111,B10000,B11111,B10000,B11111,B00000,B00000,B00000
 };
-byte v[8] = {//ㅍ
+byte  v[8] = {//ㅍ
         B11111,B01010,B01010,B11111,B00000,B00000,B00000,B00000
 };
 byte g[8] = {//ㅎ
@@ -107,39 +111,22 @@ byte P[8] = { //ㅖ
 };
 
 //딕셔너리 자료형의 Key 배열과 Value 배열
-char choAndJongKey[] = { 
+char choAndJongKey[] = { //len:19
   'r','s','e','f','a','q','t','d','w','c','z','x','v','g','R','E','Q','T','W'
 };
-byte* choAndJongValue[] = {//ㄱ,ㄴ,ㄷ,ㄹ,ㅁ,ㅂ,ㅅ,ㅇ,ㅈ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ,ㄲ,ㄸ,ㅃ,ㅆ,ㅉ
+byte* choAndJongValue[] = {//ㄱ,ㄴ,ㄷ,ㄹ,ㅁ,ㅂ,ㅅ,ㅇ,ㅈ,ㅊ,ㅋ,ㅌ,ㅍ,ㅎ,ㄲ,ㄸ,ㅃ,ㅆ,ㅉ len:19
   r,s,e,f,a,q,t,d,w,c,z,x,v,g,R,E,Q,T,W
 };
-char uformKey[] = {
+char uFormKey[] = { //len:5
   'm','h','y','n','b'
 };
-byte* uformValue[] = {//ㅡ,ㅗ,ㅛ,ㅜ,ㅠ
+byte* uFormValue[] = {//ㅡ,ㅗ,ㅛ,ㅜ,ㅠ len:5
   m,h,y,n,b
 };
-char yiformKey[] = {
+char yiFormKey[] = { //len:9
   'k','i','j','u','l','o','O','p','P'
 };
-byte* yiformValue[] = {//ㅏ,ㅑ,ㅓ,ㅕ,ㅣ,ㅐ,ㅒ,ㅔ,ㅖ
+byte* yiFormValue[] = {//ㅏ,ㅑ,ㅓ,ㅕ,ㅣ,ㅐ,ㅒ,ㅔ,ㅖ len:9
   k,i,j,u,l,o,O,p,P
 };
 
-void setup() {
-  // put your setup code here, to run once:
-  lcd.begin();
-  lcd.backlight();
-  lcd.createChar(1, r);
-  lcd.home();
-  lcd.write(1);
-  delay(1000);
-  lcd.home();
-  lcd.createChar(1, s);
-  lcd.write(1);
-}
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
-}
