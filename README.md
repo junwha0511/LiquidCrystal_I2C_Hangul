@@ -8,7 +8,7 @@
  
  1. printHangul(String txt, byte firstPoint) 함수: 첫번째 인자로 키보드에서 한글과 대응되는 영문을 한 글자마다 공백으로 구분하여 입력하세요. 두번째 인자는 글자가 시작하는 위치입니다. (0~15)
  
- 예) 한글 출력 라이브러리 => gks rmf cnf fur fk dl qm fj fl
+     예) 한글 출력 라이브러리 => gks rmf cnf fur fk dl qm fj fl
  
     
  2. setDelayTime(int t) 함수: 글자가 출력되는 속도를 설정하세요 (기본값: 1000ms)
