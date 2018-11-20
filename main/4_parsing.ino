@@ -11,10 +11,18 @@ void printHangul(String txt, byte startPoint)
       if(chArr[i] == ' ' or chArr[i]=='\0'){ //해당 문자가 공백일 경우        
         switch(printing(temp[0],temp[1],temp[2],temp[3],temp[4],tempIndex,printPoint)){
           case 1:
-            printPoint++;
+            if(printPoint==15){
+              printPoint = 0;
+            }else{
+              printPoint++;
+            }
             break;
           case 2:
-            printPoint+=2;
+            if(printPoint>=14){
+              printPoint = 0;
+            }else{
+              printPoint+=2;
+            }
             break;
         }
         //temp 배열 초기화

@@ -1,10 +1,4 @@
 int printing(char a1, char a2, char a3, char a4, char a5, byte tempIndex, byte hanCursor){ //으,이,의,응,잉,읭,읇,읿,읣
-  Serial.println(a1);
-  Serial.println(a2);
-  Serial.println(a3);
-  Serial.println(a4);
-  Serial.println(a5);
-  Serial.println();
   if(tempIndex == 2){ //받침없는 ㅡ형, ㅣ형
     int cho = getchoAndJongIndex(a1);
     int u = getUFormIndex(a2);
