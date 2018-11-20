@@ -1,6 +1,6 @@
 # LiquidCrystal_I2C-print-hangul
 
- 이 코드는 I2C 통신을 사용하는 16x2 LCD 또는 20x4 LCD에서 한글을 출력하고자 하는 분들을 위해 제작된 라이브러리입니다.
+ 이 라이브러리는 I2C 통신을 사용하는 16x2 LCD 또는 20x4 LCD에서 한글을 출력하고자 하는 분들을 위해 제작된 라이브러리입니다.
  
  main 폴더를 다운 받으시면 추가적인 라이브러리 없이 main 파일에서 함수를 실행하실 수 있으며,
  LiquidCrystal_I2C_Hangul 라이브러리를 다운 받으시면 기존 LiquidCrystal_I2C 라이브러리에 포함된 함수들과 아래의 함수들을 사용하실 수 있습니다.
