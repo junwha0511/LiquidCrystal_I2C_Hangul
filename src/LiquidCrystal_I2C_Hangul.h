@@ -126,9 +126,9 @@ private:
     uint8_t _cols;
     uint8_t _rows;
     uint8_t _backlightval;
-    int getchoAndJongIndex(char key);
-    byte* getUFormIndex(char key);
-    byte* getYiFormIndex(char key);
+    int getchoAndJongIndex(char key);   
+    int getUFormIndex(char key);
+    int getYiFormIndex(char key);
     void mergeChoJung(byte* cho, byte* jung, byte* mergedArr);
     int enrollNum = 0;
     int delayTime = 500;

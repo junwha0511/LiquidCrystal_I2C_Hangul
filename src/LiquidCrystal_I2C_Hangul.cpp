@@ -312,7 +312,7 @@ int LiquidCrystal_I2C_Hangul::getchoAndJongIndex(char key){ //초성과 종성�
   }
   return -1;
 }
-byte* LiquidCrystal_I2C_Hangul::getUFormIndex(char key){ //ㅡ형 모음의 key로 배열 인덱스를 얻는다.
+int LiquidCrystal_I2C_Hangul::getUFormIndex(char key){ //ㅡ형 모음의 key로 배열 인덱스를 얻는다.
   for(int i=0; i<5; i++){
     if(key==uFormKey[i]){
       return i;
@@ -320,7 +320,7 @@ byte* LiquidCrystal_I2C_Hangul::getUFormIndex(char key){ //ㅡ형 모음의 key�
   }
   return -1;
 }
-byte* LiquidCrystal_I2C_Hangul::getYiFormIndex(char key){ //ㅣ형 모음의 key로 배열 인덱스를 얻는다.
+int LiquidCrystal_I2C_Hangul::getYiFormIndex(char key){ //ㅣ형 모음의 key로 배열 인덱스를 얻는다.
   for(int i=0; i<9; i++){
     if(key==yiFormKey[i]){
       return i;
