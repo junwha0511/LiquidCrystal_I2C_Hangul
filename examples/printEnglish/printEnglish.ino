@@ -7,9 +7,7 @@ void setup() {
   Serial.begin(9600);
   lcd.init();
   lcd.backlight();
-  lcd.setDelayTime(1000);
-  lcd.printHangul(L"한글출력입니다",0,7); //lcd.printHangul(한글 문장, 시작 포인트, 문장 길이);
-
+  lcd.print("Hello World!");
 }
 
 void loop() {

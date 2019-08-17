@@ -304,29 +304,33 @@ void LiquidCrystal_I2C_Hangul::setDelayTime(int t){
   delayTime = t;
 }
 
-int LiquidCrystal_I2C_Hangul::getchoAndJongIndex(char key){ //초성과 종성의 key로 배열 인덱스를 얻는다.
-  for(int i=0; i<19; i++){
-    if(key==choAndJongKey[i]){
-      return i;
+bool LiquidCrystal_I2C_Hangul::isYi(byte key){ //'ㅣ'형 여부
+  byte yiIndex[10] = {0,1,2,3,4,5,6,7,20};
+  for(byte i=0; i<10; i++){
+    if(key == yiIndex[i]){
+      return true;
     }
   }
-  return -1;
+  return false;
 }
-int LiquidCrystal_I2C_Hangul::getUFormIndex(char key){ //ㅡ형 모음의 key로 배열 인덱스를 얻는다.
-  for(int i=0; i<5; i++){
-    if(key==uFormKey[i]){
-      return i;
+bool LiquidCrystal_I2C_Hangul::isU(byte key){ //'ㅡ'형 여부
+  byte uIndex[5] = {8,12,13,17,18};
+  for(byte i=0; i<5; i++){
+    if(key == uIndex[i]){
+      return true;
     }
   }
-  return -1;
+  return false;
 }
-int LiquidCrystal_I2C_Hangul::getYiFormIndex(char key){ //ㅣ형 모음의 key로 배열 인덱스를 얻는다.
-  for(int i=0; i<9; i++){
-    if(key==yiFormKey[i]){
-      return i;
+
+bool LiquidCrystal_I2C_Hangul::isSSang(byte key){ //'ㅡ'형 여부
+  byte ssangIndex[12] = {3,5,6,9,10,11,12,13,14,15,18,20};
+  for(byte i=0; i<12; i++){
+    if(key == ssangIndex[i]){
+      return true;
     }
   }
-  return -1;
+  return false;
 }
 
 void LiquidCrystal_I2C_Hangul::mergeChoJung(byte* cho, byte* jung, byte* mergedArr){ //합칠 자음(초성), 중성 입력
@@ -340,283 +344,77 @@ void LiquidCrystal_I2C_Hangul::mergeChoJung(byte* cho, byte* jung, byte* mergedA
 } 
 
 //파싱 함수
-void LiquidCrystal_I2C_Hangul::printHangul(String txt, byte startPoint)
-{  
-  char chArr[1000] = {0}; //문자들을 저장할 배열을 선언한다. (공백 포함 1천자)
-  char temp[5] = {0}; //임시 저장 배열
-  byte tempIndex = 0; //temp 배열 인덱스
-  txt+=' ';
-  txt.toCharArray(chArr, txt.length()); //매개인자를 chArr에 저장한다.
-  int printPoint = startPoint;
-  for(int i=0; i<1000; i++){
-      if(chArr[i] == ' ' or chArr[i]=='\0'){ //해당 문자가 공백일 경우        
-        switch(printing(temp[0],temp[1],temp[2],temp[3],temp[4],tempIndex,printPoint)){
-          case 1:
-            if(printPoint==15){
-              printPoint = 0;
-            }else{
-              printPoint++;
-            }
-            break;
-          case 2:
-            if(printPoint>=14){
-              printPoint = 0;
-            }else{
-              printPoint+=2;
-            }
-            break;
-        }
-        //temp 배열 초기화
-        for(byte j=0; j<5; j++){
-          temp[j] = 0;
-        }
-        tempIndex = 0; //temp 배열 인덱스 초기화
-        if(chArr[i]=='\0'){
-          return;
-        }
-      }else{
-        temp[tempIndex] = chArr[i]; //temp 배열에 값 저장
-        tempIndex++; //tempIndex 증가
-      }
+void LiquidCrystal_I2C_Hangul::printHangul(wchar_t* txt, byte startPoint, byte len)
+{ 
+  byte hanCursor = startPoint;
+  for(int i=0; i<len; i++){
+    int univalue = (int)(txt[i]+65536)-44032;
+    byte jong = univalue % 28;
+    byte jung = ((univalue-jong)/28)%21;
+    byte cho = ((univalue-jong)/28)/21;
+    hanCursor+=printing(cho, jung, jong, hanCursor,i);
   }
 }
 
-int LiquidCrystal_I2C_Hangul::printing(char a1, char a2, char a3, char a4, char a5, byte tempIndex, byte hanCursor){ //으,이,의,응,잉,읭,읇,읿,읣
-  if(tempIndex == 2){ //받침없는 ㅡ형, ㅣ형
-    int cho = getchoAndJongIndex(a1);
-    int u = getUFormIndex(a2);
-    int yi = getYiFormIndex(a2);
-    if(u>=0){
+int LiquidCrystal_I2C_Hangul::printing(byte cho, byte jung, byte jong, byte hanCursor, byte charNum){ //으,이,의,응,잉,읭,읇,읿,읣
+  int enrollNum=0;
+  int returnNum=2;
+  if(charNum%2==0){
+    enrollNum = 0;//0,1,2,3
+  }else if(charNum%2==1){
+    enrollNum = 4;//4,5,6,7
+  }
+  if(isU(jung)){//받침없는 'ㅡ'형
       byte mergedArr[8];
-      mergeChoJung(choAndJongValue[cho], uFormValue[u], mergedArr);
+      mergeChoJung(wcCho[cho], wcJung[jung], mergedArr);
       createChar(enrollNum, mergedArr);
-      if(enrollNum==0){
-        clear();
-      }
       setCursor(hanCursor, 0);
       write(enrollNum);
-      if(enrollNum<7){
-        enrollNum++;
-      }else if(enrollNum==7){
-        enrollNum=0;
-      }
-      
-      delay(delayTime);
-      return 1;
-    }else if(yi>=0){
-      if(enrollNum==7 or enrollNum==0){
-        enrollNum=0;
-        clear();
-      }
-      createChar(enrollNum, choAndJongValue[cho]);
-      createChar(enrollNum+1, yiFormValue[yi]);
+      enrollNum++;
+      returnNum = 1;
+  }else if(isYi(jung)){//'받침없는 'ㅣ'형
+      createChar(enrollNum, wcCho[cho]);
+      createChar(enrollNum+1, wcJung[jung]);
       setCursor(hanCursor, 0);
       write(enrollNum);
       setCursor(hanCursor+1, 0);
       write(enrollNum+1);
-      
-      if(enrollNum<6){
-        enrollNum+=2;
-      }else if(enrollNum==6){
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }
-  }else if(tempIndex == 3){ //받침없는 ㅢ형 또는 받침있는 ㅡ형, ㅣ형 
-    int cho = getchoAndJongIndex(a1);
-    int jong = getchoAndJongIndex(a3);
-    int u = getUFormIndex(a2);
-    int yi = getYiFormIndex(a2);
-    int iswa = getYiFormIndex(a3);
-    if(u>=0 and iswa>=0){
+      enrollNum+=2;
+  }else{//'받침없는 'ㅢ'형
       byte mergedArr[8];
-      mergeChoJung(choAndJongValue[cho], uFormValue[u],mergedArr);
-      if(enrollNum==7 or enrollNum==0){
-        enrollNum=0;
-        clear();
-      }
-      createChar(enrollNum, mergedArr);
-      createChar(enrollNum+1, yiFormValue[iswa]);
-      setCursor(hanCursor, 0);
-      write(enrollNum);
-      setCursor(hanCursor+1, 0);
-      write(enrollNum+1);
-      
-      if(enrollNum<6){
-        enrollNum+=2;
-      }else if(enrollNum==6){
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }else if(u>=0){
-      byte mergedArr[8];
-      mergeChoJung(choAndJongValue[cho], uFormValue[u], mergedArr);
-      
-      if(enrollNum==7 or enrollNum==0){
-        clear();
-        enrollNum = 0;
-      }
+      mergeChoJung(wcCho[cho], wcJung[wcUi[jung][0]] ,mergedArr);
       
       createChar(enrollNum, mergedArr);
-      createChar(enrollNum+1, choAndJongValue[jong]);
-      
       setCursor(hanCursor, 0);
       write(enrollNum);
-      setCursor(hanCursor, 1);
-      write(enrollNum+1);
-      
-      if(enrollNum<6){
-        enrollNum+=2;
-      }else if(enrollNum==6){
-        
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 1;
-    }else if(yi>=0){
-      if(enrollNum>=6 or enrollNum==0){
-        enrollNum=0;
-        clear();
-      }
-      createChar(enrollNum, choAndJongValue[cho]);
-      createChar(enrollNum+1, yiFormValue[yi]);
-      createChar(enrollNum+2, choAndJongValue[jong]);
-      setCursor(hanCursor, 0);
-      write(enrollNum);
-      setCursor(hanCursor+1, 0);
-      write(enrollNum+1);
-      setCursor(hanCursor, 1);
-      write(enrollNum+2);
-      
-      if(enrollNum<5){
-        enrollNum+=3;
-      }else if(enrollNum==5){
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }
-  }else if(tempIndex == 4){ //받침있는 ㅢ형 또는 쌍받침있는 ㅡ형, ㅣ형 
-    int cho = getchoAndJongIndex(a1);
-    int jong1 = getchoAndJongIndex(a3);
-    int jong2 = getchoAndJongIndex(a4);
-    int u = getUFormIndex(a2);
-    int yi = getYiFormIndex(a2);
-    int iswa = getYiFormIndex(a3);
-    if(u>=0 and iswa>=0){
-      byte mergedArr[8];
-      mergeChoJung(choAndJongValue[cho], uFormValue[u], mergedArr);
-      if(enrollNum>4 or enrollNum==0){
-        enrollNum=0;
-        clear();
-      }
-      createChar(enrollNum, mergedArr);
-      createChar(enrollNum+1, yiFormValue[iswa]);
-      createChar(enrollNum+2, choAndJongValue[jong2]);
-      setCursor(hanCursor, 0);
-      write(enrollNum);
-      setCursor(hanCursor+1, 0);
-      write(enrollNum+1);
-      setCursor(hanCursor, 1);
-      write(enrollNum+2);
-      
-      if(enrollNum<5){
-        enrollNum+=3;
-      }else if(enrollNum==5){
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }else if(u>=0){
-      byte mergedArr[8];
-      mergeChoJung(choAndJongValue[cho], uFormValue[u], mergedArr);
-      
-      if(enrollNum==7 or enrollNum==0){
-        clear();
-        enrollNum = 0;
-      }
-      
-      createChar(enrollNum, mergedArr);
-      createChar(enrollNum+1, choAndJongValue[jong1]);
-      createChar(enrollNum+2, choAndJongValue[jong2]);
-      setCursor(hanCursor, 0);
-      write(enrollNum);
-      setCursor(hanCursor, 1);
-      write(enrollNum+1);
-      setCursor(hanCursor+1, 1);
-      write(enrollNum+2);
-      
-      if(enrollNum<5){
-        enrollNum+=3;
-      }else if(enrollNum==5){
-        
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }else if(yi>=0){
-      if(enrollNum>=4 or enrollNum==0){
-        enrollNum=0;
-        clear();
-      }
-      createChar(enrollNum, choAndJongValue[cho]);
-      createChar(enrollNum+1, yiFormValue[yi]);
-      createChar(enrollNum+2, choAndJongValue[jong1]);
-      createChar(enrollNum+3, choAndJongValue[jong2]);
-      setCursor(hanCursor, 0);
-      write(enrollNum);
-      setCursor(hanCursor+1, 0);
-      write(enrollNum+1);
-      setCursor(hanCursor, 1);
-      write(enrollNum+2);
-      setCursor(hanCursor+1, 1);
-      write(enrollNum+3);
-      
-      if(enrollNum<4){
-        enrollNum+=4;
-      }else if(enrollNum==4){
-        enrollNum=0;
-      }
-      delay(delayTime);
-      return 2;
-    }
-  }else if(tempIndex==5){
-    int cho = getchoAndJongIndex(a1);
-    int u = getUFormIndex(a2);
-    int yi = getYiFormIndex(a3);
-    int jong1 = getchoAndJongIndex(a4);
-    int jong2 = getchoAndJongIndex(a5);
 
-    byte mergedArr[8];
-    mergeChoJung(choAndJongValue[cho], uFormValue[u], mergedArr);
-    if(enrollNum>3 or enrollNum==0){
-      enrollNum=0;
+      createChar(enrollNum+1, wcJung[wcUi[jung][1]]);
+      setCursor(hanCursor+1, 0);
+      write(enrollNum+1);
+      enrollNum+=2;
+  }
+  if(jong>0){
+      if(isSSang(jong)){
+        createChar(enrollNum, wcJong[wcSSang[jong][0]]);
+        setCursor(hanCursor, 1);
+        write(enrollNum);
+        createChar(enrollNum+1, wcJong[wcSSang[jong][1]]);
+        setCursor(hanCursor+1, 1);
+        write(enrollNum+1);
+        returnNum = 2;
+      }else{
+        createChar(enrollNum, wcJong[jong]);
+        setCursor(hanCursor, 1);
+        write(enrollNum);
+      }
+  }
+    delay(delayTime);
+
+    if(charNum%2==1){
       clear();
     }
-    createChar(enrollNum, mergedArr);
-    createChar(enrollNum+1, yiFormValue[yi]);
-    createChar(enrollNum+2, choAndJongValue[jong1]);
-    createChar(enrollNum+3, choAndJongValue[jong2]);
-    
-    setCursor(hanCursor, 0);
-    write(enrollNum);
-    setCursor(hanCursor+1, 0);
-    write(enrollNum+1);
-    setCursor(hanCursor, 1);
-    write(enrollNum+2);
-    setCursor(hanCursor+1, 1);
-    write(enrollNum+3);
-    
-    if(enrollNum<3){
-      enrollNum+=3;
-    }else if(enrollNum==3){
-      enrollNum=0;
-    }
-    delay(delayTime);
-    return 2;
-  }
+
+    return returnNum;
 }
 
 // unsupported API functions

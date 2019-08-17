@@ -8,8 +8,9 @@ void setup() {
   lcd.init();
   lcd.backlight();
   lcd.setDelayTime(1000);
-  lcd.printHangul(L"한글출력입니다",0,7); //lcd.printHangul(한글 문장, 시작 포인트, 문장 길이);
-
+  lcd.printHangul(L"한글",0,7); //lcd.printHangul(한글 문장, 시작 포인트, 문장 길이);
+  lcd.print(" ");
+  lcd.printHangul(L"출력",4,7); 
 }
 
 void loop() {

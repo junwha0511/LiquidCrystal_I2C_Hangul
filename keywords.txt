@@ -41,8 +41,8 @@ cursor_off	KEYWORD2
 setBacklight	KEYWORD2
 load_custom_character	KEYWORD2
 printstr	KEYWORD2
-printHangul	KEYWORD2
-setDelayTime	KEYWORD2
+printHangul KEYWORD2
+setDelayTime KEYWORD2
 ###########################################
 # Constants (LITERAL1)
 ###########################################
