@@ -348,7 +348,7 @@ void LiquidCrystal_I2C_Hangul::printHangul(wchar_t* txt, byte startPoint, byte l
 { 
   byte hanCursor = startPoint;
   for(int i=0; i<len; i++){
-    int univalue = (int)(txt[i]+65536)-44032;
+    unsigned int univalue = (unsigned)(txt[i])-44032;
     byte jong = univalue % 28;
     byte jung = ((univalue-jong)/28)%21;
     byte cho = ((univalue-jong)/28)/21;
