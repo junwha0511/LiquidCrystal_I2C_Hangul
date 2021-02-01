@@ -7,6 +7,7 @@
  LiquidCrystal_I2C_Hangul 라이브러리에서는 기존 LiquidCrystal_I2C 라이브러리에 포함된 함수들과 함께 아래의 함수들을 지원합니다.
  
  
+ 
  This library is a library that prints hangul(Korean) on 16x2 LCD or 20x4 LCD that uses I2C comunication.
  
  You can use this library by comfortably search 'LiquidCrystal_I2C_Hangul' in Arduino Library Manager or clone on hand.
