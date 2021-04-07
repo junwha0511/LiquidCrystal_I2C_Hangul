@@ -3,6 +3,7 @@
 ## Introduction
 
  이 라이브러리는 I2C 통신을 사용하는 16x2 LCD 또는 20x4 LCD에서 한글을 출력할 수 있는 라이브러리입니다.
+ 
  This library is a library that prints hangul(Korean) on 16x2 LCD or 20x4 LCD that uses I2C comunication.
  
 ## Getting started
@@ -16,6 +17,7 @@
 ### Documentation: Standard API
 LiquidCrystal_I2C_Hangul 라이브러리에서는 
 기존 LiquidCrystal_I2C 라이브러리에 포함된 함수들을 지원합니다.
+
 This Library supports the functions in 'LiquidCrystal_I2C' also.
 
 [https://www.arduino.cc/reference/en/](https://www.arduino.cc/reference/en/)
