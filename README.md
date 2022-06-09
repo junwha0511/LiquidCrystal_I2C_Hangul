@@ -20,7 +20,7 @@ LiquidCrystal_I2C_Hangul 라이브러리에서는
 
 This Library supports the functions in 'LiquidCrystal_I2C' also.
 
-[https://www.arduino.cc/reference/en/](https://www.arduino.cc/reference/en/)
+[https://www.arduino.cc/reference/en/libraries/liquidcrystal]([https://www.arduino.cc/reference/en/](https://www.arduino.cc/reference/en/libraries/liquidcrystal/))
 
   
 ### Documentation: Non-Standard API
