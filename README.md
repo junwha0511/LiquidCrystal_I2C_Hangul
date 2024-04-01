@@ -35,6 +35,8 @@ This Library supports the functions in 'LiquidCrystal_I2C' also.
 - `setDelayTime(int t)`: 글자가 출력되는 속도를 설정합니다. (기본값: 1000ms)
 
 ## Contributors
-[Junwha Hong @junwha0511](https://github.com/junwha0511)
-[Dohun Kim @uthem150](https://github.com/uthem150)
-[Annonymous @per1234](https://github.com/per1234)
+Junwha Hong [@junwha0511](https://github.com/junwha0511)
+
+Dohun Kim [@uthem150](https://github.com/uthem150)
+
+Annonymous [@per1234](https://github.com/per1234)
